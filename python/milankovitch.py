@@ -135,12 +135,10 @@ intv = np.arange(1,5000+2,1)
 #     fsw(c)=daily_insolation(k,65,90,2);
 #     c=c+1;
 # end
-Fsw = daily_insolation(intv,65,90,2)
+Fsw = daily_insolation(np.arange(1,5000+2,1),65,90,2)
 plt.plot(intv,Fsw)
-plt.ylabel('Insolation @ 65˚N on the Summer Solstice (W m^{-2})')
+plt.ylabel('Insolation @ 65˚N on the Summer Solstice')
 plt.xlabel('Thousands of years before present', fontweight='bold')
-ax = plt.axes()
-ax.set_facecolor("white")
 plt.rc('font', size=8)
 plt.show()
 ##
