@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-
+import datetime as date
 import scipy as scipy
 
     
@@ -148,10 +148,15 @@ plt.plot(np.arange(0,1000+2),Fsw)
 plt.show()
 ##
 #Example 2: Difference between June 20 (calendar day) and summer solstice insolation at 65 N
-# june20 = datenum(0,6,20) - 1
+Fsw = daily_insolation(np.arange(0,100+2), 65, 90, 2)
+plt.plot(np.arange(0,100+2), Fsw)
+plt.show()
+# june20 = date.toordinal(date(0,6,20) - 1)
 
 # Fsw1 = daily_insolation(np.arange(0,1000+2),65,june20)
 
 # Fsw2 = daily_insolation(np.arange(0,1000+2),65,90,2)
 
 # plt.plot(np.arange(0,1000+1),Fsw2)
+
+#DataIn = np.loadtxt('input.dat')
