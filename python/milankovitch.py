@@ -135,21 +135,25 @@ intv = np.arange(1,5000+2,1)
 #     fsw(c)=daily_insolation(k,65,90,2);
 #     c=c+1;
 # end
-Fsw = daily_insolation(np.arange(1,5000+2,1),65,90,2)
-plt.plot(intv,Fsw)
-plt.ylabel('Insolation @ 65˚N on the Summer Solstice')
-plt.xlabel('Thousands of years before present', fontweight='bold')
-plt.rc('font', size=8)
-plt.show()
+# Fsw = daily_insolation(np.arange(1,5000+2,1),65,90,2)
+# plt.plot(intv,Fsw)
+# plt.ylabel('Insolation @ 65˚N on the Summer Solstice')
+# plt.xlabel('Thousands of years before present', fontweight='bold')
+# plt.rc('font', size=8)
+# plt.show()
 ##
 #Example 1: Summer solstice insolation at 65 N')
 Fsw = daily_insolation(np.arange(0,1000+2),65,90,2)
-plt.plot(np.arange(0,1000+2),Fsw)
+plt.plot(np.arange(0,1000+2,1),Fsw)
+plt.ylabel('Insolation @ 65˚N on the Summer Solstice', fontweight='bold')
+plt.xlabel('Thousands of years before present', fontweight='bold')
 plt.show()
 ##
 #Example 2: Difference between June 20 (calendar day) and summer solstice insolation at 65 N
 Fsw = daily_insolation(np.arange(0,100+2), 65, 90, 2)
-plt.plot(np.arange(0,100+2), Fsw)
+plt.ylabel('Insolation @ 65˚N on the Summer Solstice', fontweight='bold')
+plt.xlabel('Thousands of years before present', fontweight='bold')
+plt.plot(np.arange(0,100+2,1), Fsw)
 plt.show()
 # june20 = date.toordinal(date(0,6,20) - 1)
 
