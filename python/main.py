@@ -28,7 +28,7 @@ def main():
     # plt.show()
 
     # LookUp.lookUpMatrix("matrix.txt",0.017644,23.573,84.26)
-    LookUp.miniMatrix("matrix.txt", 0.000, 0.100, -150, -100, 22)
+    LookUp.miniMatrix("matrix.txt", 0.000, 0.100, -150, -100, 22, 80.00, 100.00)
 
 if __name__ == "__main__":
     main()

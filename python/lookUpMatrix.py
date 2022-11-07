@@ -34,16 +34,17 @@ class LookUp:
             if (ecc == e) and (obliquity == o) and (precession == p):
                 print("year: ", int(y))
 
-    def miniMatrix( matrix, minEcc, maxEcc, minYear, maxYear, minObl):
+    def miniMatrix( matrix, minEcc, maxEcc, minYear, maxYear, minObl, minOmega, maxOmega):
         m = LookUp.readMatrix(matrix)
         newMatrix = []
         eccTable = m[:,1]
         obliqTable = m[:,3]
+        omegaTable = m[:,2]
         year = m[:,0]
-        for e,o,y in zip(eccTable, obliqTable, year):
+        for e,o,om,y in zip(eccTable, obliqTable, omegaTable, year):
             if ((minEcc <= e) & (maxEcc >= e)) and ((minYear <= y) & (maxYear >= y)) \
-            and (minObl <= o):
-                temp = dict({"Ecc": e, "Obl": o, "Year": y})
+            and (minObl <= o) and ((minOmega <= om) & (maxOmega >= om)):
+                temp = dict({"Ecc": e, "Obl": o,"Omega": om, "Year": y})
                 newMatrix.append(temp)
         LookUp.writeMatrix(newMatrix)
         
