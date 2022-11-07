@@ -34,6 +34,13 @@ class LookUp:
             if (ecc == e) and (obliquity == o) and (precession == p):
                 print("year: ", int(y))
 
+    def lookUpMiniMatrix( miniMatrix, ecc=None, obliq=None, omega=None):
+        with open(miniMatrix, 'r') as f:
+            json_object = json.load(f)
+        for i in json_object:
+            if (i["Ecc"] == ecc) and (i["Obl"] == obliq) and (i["Omega"] == omega):
+                print("year: ", i["Year"])
+
     def miniMatrix( matrix, minEcc, maxEcc, minYear, maxYear, minObl, minOmega, maxOmega):
         m = LookUp.readMatrix(matrix)
         newMatrix = []
