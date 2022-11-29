@@ -41,6 +41,7 @@ class LookUp:
             if (i["Ecc"] == ecc) and (i["Obl"] == obliq) and (i["Omega"] == omega):
                 print("year: ", i["Year"])
 
+
     def miniMatrix( matrix, minEcc, maxEcc, minYear, maxYear, minObl, minOmega, maxOmega):
         m = LookUp.readMatrix(matrix)
         newMatrix = []

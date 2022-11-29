@@ -77,7 +77,7 @@ class Milankovitch:
                 lambda_ = day * 2 * np.pi / 360
             else:
                 print('Error: invalid day_type')
-                Fsw = nan
+                Fsw = None
                 Milankovitch.daily_insolation
                 return Fsw,ecc,obliquity,long_perh
         
