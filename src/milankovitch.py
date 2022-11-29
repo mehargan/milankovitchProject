@@ -23,10 +23,7 @@ class MilankovitchTable:
         return np.array(b)
 
     def readMatrix(self):
-        # with open('matrix.txt') as f:
-        #     contents = f.read()
-
-        year, ecc, omega, obliq, _1, insol, _2, _3, _4 = np.loadtxt('mtable.txt', unpack=True, skiprows=1)
+        year, ecc, omega, obliq, _1, insol, _2, _3, _4 = np.loadtxt('./data/mtable.txt', unpack=True, skiprows=1)
 
         # m = self._mag_func(contents)
         self.year_l = np.array(year[:MAX_KYEARS])
@@ -36,7 +33,7 @@ class MilankovitchTable:
         self.insol_l = np.array(insol[:MAX_KYEARS])
 
     def readVostok(self):
-        _depth, year, _deut, temp = np.loadtxt('vostok.txt', unpack=True)
+        _depth, year, _deut, temp = np.loadtxt('./data/vostok.txt', unpack=True)
         self.temp_l[0] = 0.0
         
         mil = 1
