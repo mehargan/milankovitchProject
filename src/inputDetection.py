@@ -5,42 +5,47 @@ import time
 ARUCO_DICT = cv2.aruco.DICT_4X4_50
 
 MIN_ECC = 0.014
-MAX_ECC = 0.020
+MAX_ECC = 0.04
+
+# Markers used 
+M_START = 0
+M_EARTH = 1
+M_SUN   = 2
+M_INNER = 3
+M_OUTER = 4
 
 class InputDetection:
-    def __init__(self):
+    def __init__(self, cam):
         self.aruco_dict  = cv2.aruco.Dictionary_get(ARUCO_DICT)
         self.aruco_param = cv2.aruco.DetectorParameters_create()
 
-        self.video_feed  = cv2.VideoCapture(0)
+        self.video_feed  = cv2.VideoCapture(cam)
 
         self.img_markers = {}
 
-    def detection_loop(self, show=False):
+    def detect_parameters(self, show=False):
         # Capture video frame
         _, frame = self.video_feed.read()
         self._find_markers(frame, show)
 
-        # Check for GO marker
-        if 0 in self.img_markers:
-            omega = self._calculate_precession()
-            ecc   = self._calculate_eccentricity()
+        omega = self._calculate_precession()
+        ecc   = self._calculate_eccentricity()
 
-            return (omega, ecc)
+        return (omega, ecc)
 
-        return (None, None)
-
+    def check_start(self):
+        return M_START in self.img_markers
 
     def _find_markers(self, img, show=False):
         # Initialize marker array
         self.img_markers = {}
 
         corners, ids, rejected = cv2.aruco.detectMarkers(img, self.aruco_dict, parameters=self.aruco_param)
-        # if (corners is None or ids is None):
-        #     print ('[ERROR] No markers found')
-        #     cv2.imshow('ERROR', img)
-        #     cv2.waitKey(5000)
-        #     return
+        if (corners is None or ids is None):
+            print ('[ERROR] No markers found')
+            cv2.imshow('ERROR', img)
+            cv2.waitKey(1)
+            return
 
         # Show image and markers
         if show:
@@ -49,7 +54,7 @@ class InputDetection:
             cv2.aruco.drawDetectedMarkers(img_copy, corners, ids)
 
             cv2.imshow('Markers', img_copy)
-            cv2.waitKey(5000)
+            cv2.waitKey(1)
 
         # Save marker info in the format
         # {#id : [[.., ..], [.., ..], .., ..], #id: []}
@@ -58,7 +63,13 @@ class InputDetection:
                 self.img_markers[id[0]] = marker.astype('int32')[0]
 
     def _calculate_precession(self):
-        earth_marker = self.img_markers[1]
+        # Check to see all markers present 
+        if (not M_EARTH in self.img_markers):
+            return None
+
+        # Calculate precession based on angle rotation of Earth axis
+        earth_marker = self.img_markers[M_EARTH]
+        self.earth_pos = self._marker_center(earth_marker)
 
         del_x = earth_marker[1][0] - earth_marker[0][0]
         del_y = earth_marker[1][1] - earth_marker[0][1]
@@ -66,14 +77,19 @@ class InputDetection:
         return np.degrees(np.arctan2(del_y, del_x))
 
     def _calculate_eccentricity(self):
-        earth_marker = self._marker_center(self.img_markers[1])
-        sun_marker   = self._marker_center(self.img_markers[2])
+        # Check to see all markers present 
+        if (not M_EARTH in self.img_markers or not M_SUN in self.img_markers or \
+                not M_INNER in self.img_markers or not M_OUTER in self.img_markers):
+            return None
+
+        earth_marker = self._marker_center(self.img_markers[M_EARTH])
+        sun_marker   = self._marker_center(self.img_markers[M_SUN])
 
         dist = self._distance(earth_marker, sun_marker)
 
         # Markers used to determine radius of orbit
-        inner_marker = self._distance(self._marker_center(self.img_markers[3]), sun_marker)
-        outer_marker = self._distance(self._marker_center(self.img_markers[4]), sun_marker)
+        inner_marker = self._distance(self._marker_center(self.img_markers[M_INNER]), sun_marker)
+        outer_marker = self._distance(self._marker_center(self.img_markers[M_OUTER]), sun_marker)
 
         if (dist < outer_marker) and (dist > inner_marker):
             # Earth in circular orbit 

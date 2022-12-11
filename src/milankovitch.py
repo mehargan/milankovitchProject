@@ -22,6 +22,11 @@ class MilankovitchTable:
         b = eval('[' + ','.join(tok) + ']')
         return np.array(b)
 
+    def _normalize_insol(self, insol):
+        range = np.max(self.insol_l) - np.min(self.insol_l)
+
+        return (insol - np.min(self.insol_l)) / range
+
     def readMatrix(self):
         year, ecc, omega, obliq, _1, insol, _2, _3, _4 = np.loadtxt('./data/mtable.txt', unpack=True, skiprows=1)
 
@@ -54,11 +59,13 @@ class MilankovitchTable:
 
                 if mil == MAX_KYEARS: break
 
-    def lookUp(self, omega, minEcc):
+    def lookUp(self, omega, ecc):
         ind = np.where(np.isclose(self.omega_l, omega, atol=7.0) \
                         # & np.isclose(np.floor(self.obliq_l), 22.0) \
                         # & np.isclose(self.eccen_l, ecc, atol=0.002) \
                     )
+
+        minEcc = (ecc < 0.02)
 
         if minEcc:
             i = self.eccen_l[ind].argmin()
@@ -66,11 +73,11 @@ class MilankovitchTable:
             i = self.eccen_l[ind].argmax()
 
         mcycles = {}
-        mcycles["year"] = -1 * ind[0][i]
-        mcycles["omega"] = self.omega_l[ind[0][i]]
-        mcycles["eccen"] = self.eccen_l[ind[0][i]]
-        mcycles["obliq"] = self.obliq_l[ind[0][i]]
-        mcycles["insol"] = self.insol_l[ind[0][i]]
+        mcycles["year"] = int(ind[0][i])
+        mcycles["omega"] = float(self.omega_l[ind[0][i]])
+        mcycles["eccen"] = float(self.eccen_l[ind[0][i]])
+        mcycles["obliq"] = float(self.obliq_l[ind[0][i]])
+        mcycles["insol"] = float(self._normalize_insol(self.insol_l[ind[0][i]]))
 
         self.m_params = mcycles
         return mcycles
